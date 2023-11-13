@@ -1,11 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Utils import f_forward,loss
+from Utils import loss,sigmoid
 from Backpropagation import back_prop
 
 class NeuralNetwork:
 
-    def __init__(self,input_size,hidden_size,output_size):
+    def __init__(self,input_size,hidden_size,output_size,seed):
+        np.random.seed = seed
+        self.seed = seed
         self.w1 = np.random.randn(input_size, hidden_size)
         self.w2 = np.random.randn(hidden_size, output_size)
         self.train_acc = []
@@ -19,7 +21,7 @@ class NeuralNetwork:
         for j in range(epoch):
             l = []
             for i in range(len(x)):
-                out = f_forward(x[i],self.w1, self.w2)
+                out = self.__feed_forward(x[i],self.w1, self.w2)
                 l.append((loss(out, Y[i])))
                 self.w1, self.w2 = back_prop(x[i], Y[i], self.w1, self.w2, alpha)
             print("epochs:", j + 1, "======== acc:", (1 - (sum(l) / len(x))) * 100)
@@ -30,7 +32,7 @@ class NeuralNetwork:
     def predict(self, x):
         if x.ndim == 1:
             x = x.reshape(1, -1)
-        Out = f_forward(x, self.w1, self.w2)
+        Out = self.__feed_forward(x, self.w1, self.w2)
         maxm = 0
         k = 0
         for i in range(len(Out[0])):
@@ -45,3 +47,12 @@ class NeuralNetwork:
             print("Image is of letter C.")
         plt.imshow(x.reshape(5, 6))
         plt.show()
+
+    def __feed_forward(x, w1, w2):
+        # hidden
+        z1 = x.dot(w1)  # input from layer 1
+        a1 = sigmoid(z1)  # out put of layer 2
+        # Output layer
+        z2 = a1.dot(w2)  # input of out layer
+        a2 = sigmoid(z2)  # output of out layer
+        return (a2)
