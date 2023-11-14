@@ -1,4 +1,4 @@
-from Utils import sigmoid, sigmoid_prime
+from Utils import sigmoid, sigmoid_prime, gradient_descent
 import numpy as np
 def back_prop(x, y, w1, w2, alpha):
     # Forward pass
@@ -26,7 +26,7 @@ def back_prop(x, y, w1, w2, alpha):
     gradient_w1_weights = x.T.dot(derivative_hidden_activation * hidden_error)
 
     # Update weights with the computed gradients
-    w1 -= alpha * gradient_w1_weights
-    w2 -= alpha * gradient_w2_weights
+
+    w1,w2 = gradient_descent(w1,w2,gradient_w1_weights,gradient_w2_weights,alpha)
 
     return w1, w2
