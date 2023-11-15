@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Utils import loss, sigmoid, sigmoid_prime, gradient_descent
-from Backpropagation import back_prop
 
 class NeuralNetwork:
 
@@ -21,7 +20,7 @@ class NeuralNetwork:
             for xi, yi in zip(x, Y):
                 out = self.__feed_forward(xi)
                 l.append(loss(out, yi))
-                self.__back_prop(xi, yi, alpha)
+                self.__back_propagation(xi, yi, alpha)
             epoch_loss = sum(l) / len(x)
             epoch_acc = (1 - epoch_loss) * 100
             print(f"Epoch: {j + 1}, Accuracy: {epoch_acc:.2f}%")
@@ -48,7 +47,7 @@ class NeuralNetwork:
         a2 = sigmoid(z2)
         return a2
 
-    def __back_prop(self, x, y, alpha):
+    def __back_propagation(self, x, y, alpha):
         # Forward pass
         input_to_hidden = x.dot(self.w1)
         hidden_activation = sigmoid(input_to_hidden)
