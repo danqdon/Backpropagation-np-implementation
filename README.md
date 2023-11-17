@@ -33,7 +33,8 @@ algoritmo.
 Nuestra implementación en Python sigue la siguiente estructura:
 
 <p align="center">
-  <img src=".readme/oh1.png" alt="Texto Alternativo" width="450"/>
+  <img src="https://github.com/danqdon/Backpropagation-np-implementation/assets/94083411/ade8ba78-e9c8-4e4a-bf89-17dccc7261f4" alt="Estructura" width="450"/>
+
 </p>
 
 -   En **NeuralNetwork.py** está implementada la Red Neuronal con la que
@@ -64,49 +65,50 @@ de Backpropagation de una Red Neuronal, y no una Red Neuronal en sí,
 decidimos que la mejor opción era utilizar una red simple desde la que
 implementar el algoritmo de Backpropagation.
 
-Para ello, nos inspiramos en una red programada en Numpy que encontramos
-en el conocido portal *GeeksForGeeks*[^1]. A partir de ella,
-encapsulamos todo el contenido y lo reestructuramos para poder
-implementar y poner a prueba el funcionamiento de nuestro algoritmo.\
+Para ello, nos inspiramos en una red programada en *Numpy* que encontramos
+en el conocido portal *GeeksForGeeks*[^1]. A partir de ella, encapsulamos todo el contenido, lo
+cambiamos un poco y lo reestructuramos para poder implementar y poner a prueba el fun-
+cionamiento de nuestro algoritmo.
+
 A continuación, haremos una breve explicación de la arquitectura que
 sigue la red que hemos utilizado en este trabajo y cuál es su finalidad.
 
 <p align="center">
-  <img src=".readme/NURELNETWORK.jpg" alt="Estructura de la red neuronal." width="450"/>
+  <img src="https://github.com/danqdon/Backpropagation-np-implementation/assets/94083411/06075e8b-336f-44d4-a307-5341258d693a" alt="Estructura de la red neuronal." width="450"/>
 </p>
 
-La **entrada de la red** es una **lista binaria** de 30 elementos, que
-forman letras si se estructuran en una matriz de 6 filas x 5 columnas.
+La **entrada de la red** es una **lista binaria** de 64 elementos, que
+forman letras si se estructuran en una matriz de 8 filas x 8 columnas.
 
 <p align="center">
-  <img src=".readme//ejemplo.png" alt="Ejemplo de posible entrada de la red." width="250"/>
+  <img src="https://github.com/danqdon/Backpropagation-np-implementation/assets/94083411/a9d1d663-13e9-449e-8910-c1c93f0e5083" alt="Ejemplo de posible entrada de la red." width="250"/>
 </p>
 
-Como podemos comprobar en la figura, en esta lista de 30 elementos, siguiendo el formato
-descrito anteriormente, podemos apreciar claramente una letra 'C'.
+Como podemos comprobar en la figura 3, en esta lista de 64 elementos, siguiendo el
+formato descrito anteriormente, podemos apreciar claramente una letra ’E’.
 
-La red está entrenada con 3 salidas posibles: si la lista de entrada se
-asemeja más a una C, a una D, o a una J. Por tanto, la idea principal es
-que a partir de una lista binaria de 30 elementos dada, la clasifique
-como una de estas tres letras en función de a cuál se parezca más.
+La red est ́a entrenada con 5 salidas posibles: si la lista de entrada se asemeja m ́as a una
+A, a una E, a una I, a una O o a una U. Por tanto, la idea principal es que a partir de
+una lista binaria de 64 elementos dada, la clasifique como una vocal en funci ́on de a cu ́al se
+parezca m ́as
 
 Dicho esto, pasaremos a hablar sobre su estructura. Esta red posee 3
 capas: una capa de entrada, una capa oculta y una capa de salida.
 
--   La **capa de entrada** posee 30 neuronas, correspondientes a cada
+-   La **capa de entrada** posee 64 neuronas, correspondientes a cada
     uno de los elementos de la entrada de la red. Cada neurona de esta
     capa está conectada a todas las neuronas de la capa oculta.
 
--   La **capa oculta** tiene 5 neuronas. Cada una de estas neuronas
-    recibe las 30 entradas de la capa anterior, las multiplica por su
+-   La **capa oculta** tiene 16 neuronas. Cada una de estas neuronas
+    recibe las 64 entradas de la capa anterior, las multiplica por su
     vector de pesos único $W_1$ y luego pasa la suma ponderada a través
     de una función
     *sigmoide*[\[eq:sigmoide\]](#eq:sigmoide){reference-type="eqref"
     reference="eq:sigmoide"} para obtener la salida de la neurona.
 
-    $$z_j^{(1)} =w_{1j}^{(1)}x_{1}+ w_{2j}^{(1)}x_{2}+ w_{3j}^{(1)}x_{3} +...+ w_{30j}^{(1)}x_{30}$$
+    $$z_j^{(1)} =w_{1j}^{(1)}x_{1}+ w_{2j}^{(1)}x_{2}+ w_{3j}^{(1)}x_{3} + ... + w_{64j}^{(1)}x_{64}$$
 
-    $$h_j = \sigma(z_j^{(1)}) \quad \text{para } j = 1, 2, 3, 4, 5.$$
+    $$h_j = \sigma(z_j^{(1)}) \quad \text{para } j = 1, 2, 3,..., 16.$$
 
 -   La **capa de salida** está formada por 3 neuronas. Cada una recibe
     las salidas de las 5 neuronas de la capa oculta, las multiplica por
@@ -114,9 +116,9 @@ capas: una capa de entrada, una capa oculta y una capa de salida.
     activación. En nuestro caso es de nuevo una *sigmoide*. La clase con
     el valor más alto se toma como el resultado de la red.
 
-    $$z_i^{(2)} = w_{1i}^{(2)}h_1 + w_{2i}^{(2)}h_2 + w_{3i}^{(2)}h_3 + w_{4i}^{(2)}h_4 + w_{5i}^{(2)}h_5$$
+    $$z_i^{(2)} = w_{1i}^{(2)}h_1 + w_{2i}^{(2)}h_2 + w_{3i}^{(2)}h_3 + ... + w_{16i}^{(2)}h_{16}$$
 
-    $$a_i = \sigma(z_i^{(2)}) \quad \text{para } i = 1, 2, 3.$$
+    $$a_i = \sigma(z_i^{(2)}) \quad \text{para } i = 1, 2, 3, 4, 5.$$
 
 La **salida** de la red será:
 
@@ -228,7 +230,7 @@ La función toma como entrada *x(datos de entrada)*, *y(etiquetas)* y
 hacia adelante *(feedforward)* de la red neuronal. Calcula las salidas
 de la capa oculta *(hidden_activation)* y de la capa de salida
 *(output_activation)* a partir de las entradas *(x)* y los pesos de cada
-capa*(self.w1 y self.w2)*. La función *sigmoid* es la función de
+capa *(self.w1 y self.w2)* . La función *sigmoid* es la función de
 activación sigmoide.
 
             derivative_output_error = output_activation - y
