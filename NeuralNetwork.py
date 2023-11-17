@@ -33,10 +33,10 @@ class NeuralNetwork:
             x = x.reshape(1, -1)
         Out = self.__feed_forward(x)
         predicted_class = np.argmax(Out, axis=1)
-        class_labels = ["letter D", "letter J", "letter C"]
+        class_labels = ["letter A", "letter E", "letter I","letter O","letter U"]
         for i in predicted_class:
             print(f"Image is of {class_labels[i]}.")
-        plt.imshow(x.reshape(5, 6))
+        plt.imshow(x.reshape(8, 8))
         plt.show()
 
     def __feed_forward(self, x):
