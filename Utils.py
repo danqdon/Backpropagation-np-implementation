@@ -1,17 +1,11 @@
 import numpy as np
-
-def sigmoid(x):
-    return (1 / (1 + np.exp(-x)))
+from Value import Value
 
 def sigmoid_prime(x):
-    return sigmoid(x) * (1 - sigmoid(x))
+    s = 1 / (1 + np.exp(-x))
+    return s * (1 - s)
 
-def loss(out, Y):
-    s = (np.square(out - Y))
-    s = np.sum(s) / len(Y)
-    return s
+def mse_loss(predicted, target):
+    # Ensure that the sum starts with a Value object representing 0
+    return sum([(p - t) ** 2 for p, t in zip(predicted, target)], Value(0)) / Value(len(predicted))
 
-def gradient_descent(w1,w2,gradient_w1,gradient_w2,alpha):
-    w1 -= alpha * gradient_w1
-    w2 -= alpha * gradient_w2
-    return w1, w2

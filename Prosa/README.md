@@ -33,7 +33,7 @@ algoritmo.
 Nuestra implementación en Python sigue la siguiente estructura:
 
 <p align="center">
-  <img src=".readme/oh1.png" alt="Texto Alternativo" width="450"/>
+  <img src="../.readme/oh1.png" alt="Texto Alternativo" width="450"/>
 </p>
 
 -   En **NeuralNetwork.py** está implementada la Red Neuronal con la que
@@ -72,7 +72,7 @@ A continuación, haremos una breve explicación de la arquitectura que
 sigue la red que hemos utilizado en este trabajo y cuál es su finalidad.
 
 <p align="center">
-  <img src=".readme/NURELNETWORK.jpg" alt="Estructura de la red neuronal." width="450"/>
+  <img src="../.readme/NURELNETWORK.jpg" alt="Estructura de la red neuronal." width="450"/>
 </p>
 
 La **entrada de la red** es una **lista binaria** de 30 elementos, que
