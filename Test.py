@@ -1,6 +1,6 @@
 # Assuming Value, NeuralNetwork, and mse_loss are defined correctly
 from Value import Value
-from NeuralNetwork import NeuralNetwork
+from NeuralNetworkOld import NeuralNetwork
 from Utils import mse_loss
 
 # Mock data for testing: Simple XOR problem
@@ -8,7 +8,7 @@ input_data = [[0, 0], [0, 1], [1, 0], [1, 1]]
 target_outputs = [[0], [1], [1], [0]]
 
 # Initialize the neural network
-nn = NeuralNetwork(2, 2, 1, seed=42)
+nn = NeuralNetwork(2, 4, 1, seed=42)
 
 # Train the neural network
 nn.train(input_data, target_outputs, alpha=0.1, epoch=100)
