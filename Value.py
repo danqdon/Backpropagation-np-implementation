@@ -28,6 +28,12 @@ class Value:
         other = other if isinstance(other, Value) else Value(other)
         return Value(self.value / other.value, children=[(1 / other.value, self), (-self.value / (other.value ** 2), other)], op="/")
 
+    def __neg__(self):
+        return Value(-self.value, children=[(-1, self)], op="neg")
+
+    def log(self):
+        return Value(np.log(self.value), children=[(1 / self.value, self)], op="log")
+
     def sigmoid(self):
         # Perform the sigmoid function on the value
         value = 1 / (1 + np.exp(-self.value))

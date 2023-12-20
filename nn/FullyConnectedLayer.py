@@ -11,10 +11,16 @@ class FullyConnected(Layer):
 
         return a
 
-    def backprop(self):
-        pass
+    def backprop(self, output_grad):
+        input_grad = np.zeros_like(self.input)
+        for i, grad in enumerate(output_grad):
+            self.input[i].grad = grad
+            self.input[i].backward()  # Propagate gradients backwards
+            input_grad[i] = self.input[i].grad
+        return input_grad
+
     def update_weights(self,alpha):
-        for i in range(len(self.w1)):
-            for j in range(len(self.w1[i])):
-                self.w[i][j].value -= alpha * self.w1[i][j].grad
+        for i in range(len(self.w)):
+            for j in range(len(self.w[i])):
+                self.w[i][j].value -= alpha * self.w[i][j].grad
                 self.w[i][j].grad = 0

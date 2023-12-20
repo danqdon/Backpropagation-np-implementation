@@ -1,9 +1,13 @@
-class Layer:
-    def __init__(self):
-        pass
+from abc import ABC, abstractmethod
+class Layer(ABC):
+    @abstractmethod
     def forward(self, x):
         pass
-    def backprop(self):
+
+    @abstractmethod
+    def backprop(self, grad):
         pass
-    def update_weights(self):
+
+    @abstractmethod
+    def update_weights(self, alpha):
         pass
