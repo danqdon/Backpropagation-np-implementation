@@ -4,10 +4,15 @@ from Utils import mse_loss
 from Value import Value
 
 class NeuralNetwork:
-    def __init__(self, input_size, hidden_size, output_size, seed):
+    def __init__(self, input_size, hidden_sizes, output_size, seed):
         np.random.seed(seed)
-        self.w1 = np.array([[Value(w) for w in np.random.randn(input_size)] for _ in range(hidden_size)], dtype=object)
-        self.w2 = np.array([[Value(w) for w in np.random.randn(hidden_size)] for _ in range(output_size)], dtype=object)
+
+        # Initialize weights for each layer
+        self.weights = []
+        layer_sizes = [input_size] + hidden_sizes + [output_size]
+        for i in range(len(layer_sizes) - 1):
+            w = np.array([[Value(np.random.randn()) for _ in range(layer_sizes[i + 1])] for _ in range(layer_sizes[i])], dtype=object)
+            self.weights.append(w)
 
         self.train_acc = []
         self.train_loss = []
@@ -43,27 +48,31 @@ class NeuralNetwork:
             self.train_loss.append(epoch_loss)
 
     def __feed_forward(self, x):
-        # Assuming x is already a list of Value objects
-        z1 = [sum([wi * xi for wi, xi in zip(wrow, x)], Value(0)) for wrow in self.w1]
-        a1 = [z.sigmoid() for z in z1]  # Apply sigmoid to each Value object in z1
-
-        # Prepare for the next layer
-        z2 = [sum([wi * ai for wi, ai in zip(wrow, a1)], Value(0)) for wrow in self.w2]
-        a2 = [z.sigmoid() for z in z2]  # Apply sigmoid to each Value object in z2
-
-        return a2
+        activation = x
+        for i, w in enumerate(self.weights):
+            z = [sum([wi * ai for wi, ai in zip(wrow, activation)], Value(0)) for wrow in w]
+            if i < len(self.weights) - 1:
+                # ReLU for hidden layers
+                activation = [z_i.relu() for z_i in z]
+            else:
+                # Sigmoid for output layer
+                activation = [z_i.sigmoid() for z_i in z]
+        return activation
 
     def __update_weights(self, alpha):
-        # Update weights using gradients calculated by autodiff
-        for i in range(len(self.w1)):
-            for j in range(len(self.w1[i])):
-                self.w1[i][j].value -= alpha * self.w1[i][j].grad
-                self.w1[i][j].grad = 0  # Reset gradient after update
-
-        for i in range(len(self.w2)):
-            for j in range(len(self.w2[i])):
-                self.w2[i][j].value -= alpha * self.w2[i][j].grad
-                self.w2[i][j].grad = 0  # Reset gradient after update
+        # Update weights for each layer
+        for w_layer in self.weights:
+            for i in range(len(w_layer)):
+                for j in range(len(w_layer[i])):
+                    w_layer[i][j].value -= alpha * w_layer[i][j].grad
+                    w_layer[i][j].grad = 0
 
     def predict(self, input_data):
-        return [self.__feed_forward(x) for x in input_data]
+        raw_predictions = []
+        for x in input_data:
+            # Convert input to Value objects and perform feedforward
+            x_values = [Value(xi) for xi in x]
+            output = self.__feed_forward(x_values)
+            raw_predictions.append(output[-1].value)  # Get the raw output value
+        return raw_predictions
+

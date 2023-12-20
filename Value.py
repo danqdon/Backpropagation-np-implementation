@@ -28,6 +28,9 @@ class Value:
         other = other if isinstance(other, Value) else Value(other)
         return Value(self.value / other.value, children=[(1 / other.value, self), (-self.value / (other.value ** 2), other)], op="/")
 
+    def relu(self):
+        return Value(max(0, self.value), children=[(1 if self.value > 0 else 0, self)], op="relu")
+
     def sigmoid(self):
         # Perform the sigmoid function on the value
         value = 1 / (1 + np.exp(-self.value))

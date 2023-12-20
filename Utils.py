@@ -9,3 +9,4 @@ def mse_loss(predicted, target):
     # Ensure that the sum starts with a Value object representing 0
     return sum([(p - t) ** 2 for p, t in zip(predicted, target)], Value(0)) / Value(len(predicted))
 
+
