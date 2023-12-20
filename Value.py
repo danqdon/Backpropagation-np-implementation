@@ -56,6 +56,9 @@ class Value:
             self.grad = 1
             return
         # Recursive case: apply chain rule
+        assert isinstance(self.grad, (int, float)), "self.grad must be a scalar"
         for coeff, child in self.children:
+            assert isinstance(coeff, (int, float)), "coeff must be a scalar"
             child.grad += coeff * self.grad
             child.backward()
+
