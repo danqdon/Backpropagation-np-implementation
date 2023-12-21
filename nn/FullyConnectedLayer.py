@@ -12,11 +12,21 @@ class FullyConnected(Layer):
         return z  # Return raw output, activation is separate
 
     def backprop(self, output_grad):
-        input_grad = [Value(0) for _ in self.input]
+        input_grad = [0 for _ in self.input]
+        # Asegúrate de que output_grad no sea más largo que self.input
         for i, grad in enumerate(output_grad):
+            if i >= len(self.input):
+                break  # Evita el IndexError si output_grad es más largo que self.input
+
+            # Actualizar el gradiente de la neurona actual y realizar backward
             self.input[i].grad = grad
             self.input[i].backward()
-            input_grad[i] = self.input[i].grad
+
+            # Acumular los gradientes para la capa anterior
+            for j, _ in enumerate(self.input):
+                if j < len(self.w) and i < len(self.w[j]):
+                    input_grad[j] += self.w[j][i].value * grad
+
         return input_grad
 
     def update_weights(self, alpha):

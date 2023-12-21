@@ -13,10 +13,13 @@ class NeuralNetwork:
             x = layer.forward(x)
         return x
 
-    def __backpropagation(self, loss_grad):
-        # Start from the last layer and move backwards
+    def __backpropagation(self, loss_value):
+        # Inicializa la retropropagación llamando backward en el valor de la pérdida
+        loss_value.backward()
+        # Ahora propaga los gradientes a través de las capas
+        grad = [loss_value.grad]  # Este será 1 inicialmente
         for layer in reversed(self.layers):
-            loss_grad = layer.backprop(loss_grad)
+            grad = layer.backprop(grad)
 
     def __update_weights(self, alpha):
         for layer in self.layers:
@@ -38,7 +41,7 @@ class NeuralNetwork:
                 epoch_loss += loss_value.value
 
                 # Perform backpropagation
-                self.__backpropagation([loss_value])
+                self.__backpropagation(loss_value)
 
                 # Update weights
                 self.__update_weights(alpha)

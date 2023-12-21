@@ -10,11 +10,9 @@ target_outputs = [[0], [1], [1], [0]]
 
 # Initialize the neural network
 nn = NeuralNetwork(
-    FullyConnected(2, 5),
-    ReLU(),
-    FullyConnected(5, 3),
+    FullyConnected(2, 4),
     Sigmoid(),
-    FullyConnected(3, 1),
+    FullyConnected(4, 1),
     Sigmoid()
 )
 
@@ -31,6 +29,7 @@ for layer in nn.layers:
 
 # Test predictions
 predictions = nn.predict(input_data)
+print(predictions)
 for i in range(len(input_data)):
-    prediction_value = predictions[i][0].value if isinstance(predictions[i][0], Value) else predictions[i][0]
-    print(f"Input: {input_data[i]}, Predicted: {prediction_value}")
+    #prediction_value = predictions[i][0].value if isinstance(predictions[i][0], Value) else predictions[i][0]
+    print(f"Input: {input_data[i]}, Predicted: {predictions[i]}")

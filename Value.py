@@ -32,7 +32,11 @@ class Value:
         return Value(-self.value, children=[(-1, self)], op="neg")
 
     def log(self):
-        return Value(np.log(self.value), children=[(1 / self.value, self)], op="log")
+        # Añadir un pequeño valor epsilon para evitar el logaritmo de cero
+        epsilon = 1e-15
+        log_value = np.log(np.maximum(self.value, epsilon))
+        grad = 1 / (self.value + epsilon)  # Añadir epsilon también aquí para evitar división por cero
+        return Value(log_value, children=[(grad, self)], op="log")
 
     def relu(self):
         return Value(max(0, self.value), children=[(1 if self.value > 0 else 0, self)], op="relu")

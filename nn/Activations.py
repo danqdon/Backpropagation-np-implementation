@@ -7,7 +7,7 @@ class Sigmoid(Layer):
         return [xi.sigmoid() for xi in x]
 
     def backprop(self, output_grad):
-        input_grad = [Value(0) for _ in self.input]
+        input_grad = [0 for _ in self.input]
         for i, grad in enumerate(output_grad):
             self.input[i].grad = grad
             self.input[i].backward()
