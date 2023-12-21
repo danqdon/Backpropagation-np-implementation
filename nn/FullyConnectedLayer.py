@@ -22,11 +22,6 @@ class FullyConnected(Layer):
             self.input[i].grad = grad
             self.input[i].backward()
 
-            # Acumular los gradientes para la capa anterior
-            for j, _ in enumerate(self.input):
-                if j < len(self.w) and i < len(self.w[j]):
-                    input_grad[j] += self.w[j][i].value * grad
-
         return input_grad
 
     def update_weights(self, alpha):
