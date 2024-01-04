@@ -2,11 +2,8 @@ import numpy as np
 
 
 class NeuralNetwork:
-    def __init__(self):
-        self.layers = []
-
-    def add_layer(self, layer):
-        self.layers.append(layer)
+    def __init__(self, *layers):
+        self.layers = list(layers)
 
     def predict(self, input):
         result = input

@@ -1,8 +1,8 @@
 import numpy as np
 from neural_network.DenseLayer import DenseLayer
-from neural_network.SigmoidActivation import SigmoidActivation
+from neural_network.Activation import Sigmoid
 from neural_network.NeuralNetwork import NeuralNetwork
-from neural_network.ReluActivation import ReluActivation
+from neural_network.Activation import ReLU
 
 def generate_xor_data():
     # XOR data inputs and outputs
@@ -25,11 +25,10 @@ def main():
     X, y = generate_xor_data()
 
     # Create a neural network
-    network = NeuralNetwork()
-    network.add_layer(DenseLayer(2, 3))
-    network.add_layer(ReluActivation())
-    network.add_layer(DenseLayer(3, 1))
-    network.add_layer(SigmoidActivation())
+    network = NeuralNetwork(DenseLayer(2, 4),
+                            Sigmoid(),
+                            DenseLayer(4, 1),
+                            Sigmoid())
 
     # Train the network
     network.train(X, y, epochs=10000, learning_rate=0.1)

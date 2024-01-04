@@ -1,5 +1,3 @@
-
-
 class Layer:
     def forward(self, input):
         raise NotImplementedError

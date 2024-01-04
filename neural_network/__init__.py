@@ -1,3 +1,4 @@
 from .DenseLayer import DenseLayer
-from .SigmoidActivation import SigmoidActivation
+from .Activation import Sigmoid
+from .Activation import ReLU
 from .NeuralNetwork import NeuralNetwork
