@@ -1,35 +1,43 @@
-from Value import Value
-from nn.NeuralNetwork import NeuralNetwork
-from nn.FullyConnectedLayer import FullyConnected
-from nn.Activations import Sigmoid, ReLU
+import numpy as np
+from neural_network.DenseLayer import DenseLayer
+from neural_network.SigmoidActivation import SigmoidActivation
+from neural_network.NeuralNetwork import NeuralNetwork
+from neural_network.ReluActivation import ReluActivation
 
+def generate_xor_data():
+    # XOR data inputs and outputs
+    X = np.array([
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1]
+    ])
+    y = np.array([
+        [0],
+        [1],
+        [1],
+        [0]
+    ])
+    return X, y
 
-# Mock data for testing: Simple XOR problem
-input_data = [[0, 0], [0, 1], [1, 0], [1, 1]]
-target_outputs = [[0], [1], [1], [0]]
+def main():
+    # Generate training data
+    X, y = generate_xor_data()
 
-# Initialize the neural network
-nn = NeuralNetwork(
-    FullyConnected(2, 4),
-    Sigmoid(),
-    FullyConnected(4, 1),
-    Sigmoid()
-)
+    # Create a neural network
+    network = NeuralNetwork()
+    network.add_layer(DenseLayer(2, 3))
+    network.add_layer(ReluActivation())
+    network.add_layer(DenseLayer(3, 1))
+    network.add_layer(SigmoidActivation())
 
-# Train the neural network
-nn.train(input_data, target_outputs, alpha=0.1, epoch=100)
+    # Train the network
+    network.train(X, y, epochs=10000, learning_rate=0.1)
 
-# Print the weights and gradients after training
-print("Weights and Gradients after training:")
-for layer in nn.layers:
-    if isinstance(layer, FullyConnected):
-        for i in range(len(layer.w)):
-            for j in range(len(layer.w[i])):
-                print(f"Weight: {layer.w[i][j].value}, Gradient: {layer.w[i][j].grad}")
+    # Make predictions
+    predictions = network.predict(X)
+    for i in range(len(X)):
+        print(f"Input: {X[i]}, Predicted: {predictions[i]}, True: {y[i]}")
 
-# Test predictions
-predictions = nn.predict(input_data)
-print(predictions)
-for i in range(len(input_data)):
-    #prediction_value = predictions[i][0].value if isinstance(predictions[i][0], Value) else predictions[i][0]
-    print(f"Input: {input_data[i]}, Predicted: {predictions[i]}")
+if __name__ == "__main__":
+    main()
