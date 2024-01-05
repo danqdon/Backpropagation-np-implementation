@@ -17,3 +17,12 @@ class Sigmoid(Layer):
     def backward(self, input, grad_output):
         sigmoid_forward = self.forward(input)
         return grad_output * sigmoid_forward * (1 - sigmoid_forward)
+
+class Softmax(Layer):
+    def forward(self, input):
+        exps = np.exp(input - np.max(input, axis=-1, keepdims=True))
+        return exps / np.sum(exps, axis=-1, keepdims=True)
+
+    def backward(self, input, grad_output):
+        softmax_output = self.forward(input)
+        return grad_output * (softmax_output * (1 - softmax_output))
