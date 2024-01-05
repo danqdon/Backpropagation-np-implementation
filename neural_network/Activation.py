@@ -24,5 +24,4 @@ class Softmax(Layer):
         return exps / np.sum(exps, axis=-1, keepdims=True)
 
     def backward(self, input, grad_output):
-        softmax_output = self.forward(input)
-        return grad_output * (softmax_output * (1 - softmax_output))
+        return grad_output
