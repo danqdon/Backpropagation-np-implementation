@@ -1,6 +1,6 @@
 import numpy as np
-from Activation import Sigmoid
-from Activation import Softmax
+from .Activation import Sigmoid
+from .Activation import Softmax
 
 class MSE():
     def compute_loss(self,predicted, actual):

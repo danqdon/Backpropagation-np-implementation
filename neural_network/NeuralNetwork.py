@@ -1,11 +1,14 @@
 import numpy as np
-from LossFunctions import MSE, CrossEntropy
+from .LossFunctions import MSE, CrossEntropy
 from neural_network import DenseLayer
-
+from .Activation import Sigmoid, Softmax
 
 class NeuralNetwork:
     def __init__(self, *layers):
         self.layers = list(layers)
+        self.last_activation_layer = None
+        if layers and isinstance(layers[-1], (Sigmoid, Softmax)):
+            self.last_activation_layer = layers[-1]
 
     def predict(self, input):
         result = input
@@ -13,7 +16,7 @@ class NeuralNetwork:
             result = layer.forward(result)
         return result
 
-    def train(self, X, y, epochs, learning_rate,loss='mse'):
+    def train(self, X, y, epochs, learning_rate, loss='mse'):
         self.__set_learning_rate(learning_rate)
         for epoch in range(epochs):
             # Forward pass
@@ -31,24 +34,22 @@ class NeuralNetwork:
             # Registro del progreso
             if epoch % 10 == 0:
                 predicted = self.predict(X)
-                loss = self.compute_loss(predicted, y,loss,self.layers[-1])
-                print(f'Epoch {epoch}, Loss: {loss}')
+                loss_value = self.compute_loss(predicted, y, loss)
+                print(f'Epoch {epoch}, Loss: {loss_value}')
 
-    @staticmethod
-    def compute_loss(predicted, actual,loss,last_layer):
+    def compute_loss(self, predicted, actual, loss):
         if loss == 'mse':
-            return MSE().compute_loss(predicted,actual)
+            return MSE().compute_loss(predicted, actual)
         else:
-            return CrossEntropy(last_layer).compute_loss(predicted,actual)
+            return CrossEntropy(self.last_activation_layer).compute_loss(predicted, actual)
 
-    @staticmethod
-    def loss_derivative(predicted, actual,loss):
+    def loss_derivative(self, predicted, actual, loss):
         if loss == 'mse':
             return MSE().loss_derivative(predicted, actual)
         else:
-            return CrossEntropy().loss_derivative(predicted, actual)
+            return CrossEntropy(self.last_activation_layer).loss_derivative(predicted, actual)
 
-    def __set_learning_rate(self,new_lr):
+    def __set_learning_rate(self, new_lr):
         for layer in self.layers:
             if isinstance(layer, DenseLayer):
                 layer.learning_rate = new_lr
