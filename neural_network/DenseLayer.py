@@ -5,7 +5,7 @@ class DenseLayer(Layer):
     def __init__(self, input_units, output_units, learning_rate=0.1):
         self.weights = np.random.randn(input_units, output_units) * np.sqrt(2. / input_units)
         self.biases = np.zeros(output_units)
-        self.learning_rate = learning_rate
+        self._learning_rate = learning_rate
 
     def forward(self, input):
         return np.dot(input, self.weights) + self.biases
@@ -21,3 +21,13 @@ class DenseLayer(Layer):
         self.biases -= self.learning_rate * grad_biases
 
         return grad_input
+
+    @property
+    def learning_rate(self):
+        return self._learning_rate
+
+    @learning_rate.setter
+    def learning_rate(self, value):
+        if value <= 0:
+            raise ValueError("El learning rate debe ser mayor que 0")
+        self._learning_rate = value

@@ -1,5 +1,7 @@
 import numpy as np
 
+from neural_network import DenseLayer
+
 
 class NeuralNetwork:
     def __init__(self, *layers):
@@ -12,6 +14,7 @@ class NeuralNetwork:
         return result
 
     def train(self, X, y, epochs, learning_rate):
+        self.__set_learning_rate(learning_rate)
         for epoch in range(epochs):
             # Forward pass
             activation = X
@@ -38,3 +41,8 @@ class NeuralNetwork:
     @staticmethod
     def loss_derivative(predicted, actual):
         return 2 * (predicted - actual) / actual.size
+
+    def __set_learning_rate(self,new_lr):
+        for layer in self.layers:
+            if isinstance(layer, DenseLayer):
+                layer.learning_rate = new_lr
