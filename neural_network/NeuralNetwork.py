@@ -1,3 +1,6 @@
+import numpy as np
+from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
 from .LossFunctions import MSE, CrossEntropy
 from neural_network import DenseLayer
 from .Activation import Sigmoid, Softmax
@@ -15,9 +18,20 @@ class NeuralNetwork:
             result = layer.forward(result)
         return result
 
-    def train(self, X, y, epochs, learning_rate, loss='mse'):
+    def train(self, X, y, epochs, learning_rate, loss='mse',patience=None,valid_pc=0.2):
         self.__set_learning_rate(learning_rate)
-        loss_history = []  # Historial de pérdida
+        early_stopping = False
+        loss_history_train = []
+        r2_history_train = []
+
+        if patience is not None:
+            X, X_valid, y, y_valid = train_test_split(X, y, test_size=valid_pc, random_state=42)
+            early_stopping = True
+            r2_history_valid = []
+            loss_history_valid = []
+            best_mse = np.inf
+            epochs_no_improve = 0
+
         for epoch in range(epochs):
             # Forward pass
             activation = X
@@ -32,11 +46,39 @@ class NeuralNetwork:
                 loss_derivative = self.layers[i].backward(activations[i], loss_derivative)
 
             # Registrar el progreso
-            predicted = self.predict(X)
-            loss_value = self.compute_loss(predicted, y, loss)
-            loss_history.append(loss_value)  # Guardar la pérdida para cada época
+            predicted_train = self.predict(X)
+            loss_value = self.compute_loss(predicted_train, y, loss)
+            loss_history_train.append(loss_value)
+            r2_train = r2_score(y.flatten(), predicted_train.flatten())
+            r2_history_train.append(r2_train)
+            print(f'Epoch {epoch}, Loss Train(MSE): {loss_value}, R2 Train: {r2_train}')
 
-        return loss_history  # Devolver el historial de pérdida
+            if early_stopping:
+                predicted_validation = self.predict(X_valid)
+                loss_value_valid = self.compute_loss(predicted_validation, y_valid, loss)
+                loss_history_valid.append(loss_value_valid)
+                r2_valid = r2_score(y_valid.flatten(), predicted_validation.flatten())
+                r2_history_valid.append(r2_valid)
+                print(f',Loss Valid(MSE): {loss_value_valid}, R2 Valid: {r2_valid}')
+
+                best_mse, epochs_no_improve = self.__early_stopping(loss_value_valid,best_mse,epochs_no_improve)
+
+                if epochs_no_improve == patience:
+                    print(f'Early stopping: MSE no mejora desde la época {epoch - patience}')
+                    break
+
+        metrics = {
+            'loss_history_train': loss_history_train,
+            'r2_history_train': r2_history_train,
+        }
+
+        if early_stopping:
+            metrics.update({
+                'loss_history_valid': loss_history_valid,
+                'r2_history_valid': r2_history_valid
+            })
+
+        return metrics
 
     def compute_loss(self, predicted, actual, loss):
         if loss == 'mse':
@@ -54,3 +96,14 @@ class NeuralNetwork:
         for layer in self.layers:
             if isinstance(layer, DenseLayer):
                 layer.learning_rate = new_lr
+
+    def __early_stopping(self,loss_value_valid,best_mse,epochs_no_improve):
+        if loss_value_valid < best_mse:
+            best_mse = loss_value_valid
+            epochs_no_improve = 0
+        else:
+            epochs_no_improve += 1
+
+        return best_mse, epochs_no_improve
+
+
