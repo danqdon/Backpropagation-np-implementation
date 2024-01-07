@@ -1,4 +1,3 @@
-import numpy as np
 from .LossFunctions import MSE, CrossEntropy
 from neural_network import DenseLayer
 from .Activation import Sigmoid, Softmax
