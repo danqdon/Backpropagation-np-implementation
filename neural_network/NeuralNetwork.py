@@ -18,7 +18,7 @@ class NeuralNetwork:
             result = layer.forward(result)
         return result
 
-    def train(self, X, y, epochs, learning_rate, loss='mse',patience=None,valid_pc=0.2):
+    def train(self, X, y, epochs, learning_rate, loss='mse',patience=None,valid_pc=0.2,min_delta=0.001):
         self.__set_learning_rate(learning_rate)
         early_stopping = False
         loss_history_train = []
@@ -61,7 +61,7 @@ class NeuralNetwork:
                 r2_history_valid.append(r2_valid)
                 print(f',Loss Valid(MSE): {loss_value_valid}, R2 Valid: {r2_valid}')
 
-                best_mse, epochs_no_improve = self.__early_stopping(loss_value_valid,best_mse,epochs_no_improve)
+                best_mse, epochs_no_improve = self.__early_stopping(loss_value_valid, best_mse, epochs_no_improve,min_delta)
 
                 if epochs_no_improve == patience:
                     print(f'Early stopping: MSE no mejora desde la época {epoch - patience}')
@@ -97,13 +97,14 @@ class NeuralNetwork:
             if isinstance(layer, DenseLayer):
                 layer.learning_rate = new_lr
 
-    def __early_stopping(self,loss_value_valid,best_mse,epochs_no_improve):
-        if loss_value_valid < best_mse:
+    def __early_stopping(self, loss_value_valid, best_mse, epochs_no_improve, min_delta):
+        if best_mse - loss_value_valid > min_delta:
             best_mse = loss_value_valid
             epochs_no_improve = 0
         else:
             epochs_no_improve += 1
 
         return best_mse, epochs_no_improve
+
 
 

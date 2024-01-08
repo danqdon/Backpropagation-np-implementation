@@ -1,12 +1,4 @@
-import numpy as np
-import pandas as pd
-from sklearn.metrics import classification_report, confusion_matrix
-import seaborn as sns
-import matplotlib.pyplot as plt
-from neural_network.DenseLayer import DenseLayer
-from neural_network.Activation import Sigmoid, Softmax
-from neural_network.NeuralNetwork import NeuralNetwork
-from neural_network.LossFunctions import CrossEntropy
+
 
 def load_mnist_data():
     train_data = pd.read_csv('mnist_train.csv')
